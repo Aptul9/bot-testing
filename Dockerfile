@@ -12,11 +12,11 @@ COPY --from=ghcr.io/astral-sh/uv:0.5 /uv /uvx /usr/local/bin/
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock README.md ./
 RUN uv sync --frozen --no-dev --no-install-project
 
-RUN uv run playwright install-deps chromium && \
-    uv run playwright install chromium
+RUN uv run --no-project playwright install-deps chromium && \
+    uv run --no-project playwright install chromium
 
 COPY src/ ./src/
 RUN uv sync --frozen --no-dev

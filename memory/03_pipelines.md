@@ -2,7 +2,14 @@
 
 ## Stato attuale
 
-Nessuna pipeline CI/CD attiva. Esplicitamente fuori scope per questa iniziativa (vedi `07_objectives.md` sezione "Out of scope").
+**CI attiva** su GitHub Actions (`.github/workflows/ci.yml`) solo per validazione:
+
+- Trigger: push su `main`, pull request verso `main`.
+- Job `checks` (Ubuntu): `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` strict, `pytest`.
+- Job `docker` (dipende da checks): build immagine Docker senza push, con cache GHA.
+- Concurrency group per branch con `cancel-in-progress`.
+
+**CD deliberatamente fuori scope** (vedi `07_objectives.md`): nessun deploy automatico, nessun push su registry. La costruzione dell'immagine di release resta manuale (`docker build` locale).
 
 ## Repository
 
