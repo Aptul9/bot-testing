@@ -12,7 +12,7 @@ Nota: in produzione il path `/smnadarte-integration-app-web/app/api` corrisponde
 |---|---|---|---|
 | `POST /login` | Login | Account Takeover | BOT-2 |
 | `GET /account/user` | Dati utente post-login | Account Takeover | BOT-2 |
-| `GET /offer/availability` | Disponibilita' offerte | Price Scraping | BOT-5 |
+| `GET /offer/availability` | Disponibilità offerte | Price Scraping | BOT-5 |
 | `GET /zone/codesr/{codesr}` | Zona per codice SR | Price Scraping | BOT-5 |
 | `GET /zone/{idezon}` | Zona per id | Price Scraping | BOT-5 |
 | `GET /offer/timeslot` | Slot temporali offerte | Price Scraping | BOT-5 |
@@ -43,7 +43,7 @@ Dallo sheet `API` del file `API_antiBot_AdArte.xlsx`, caso d'uso "utente che acq
 - `GET /app/offer/timeslot`
 - `POST /app/prepareOrder`
 
-Da verificare se il prefisso completo in collaudo e' `/smnadarte-integration-app-web/app/...` (coincide con integration-app-web) oppure un servizio distinto.
+Da verificare se il prefisso completo in collaudo è `/smnadarte-integration-app-web/app/...` (coincide con integration-app-web) oppure un servizio distinto.
 
 ## Endpoint NON forniti (gap)
 

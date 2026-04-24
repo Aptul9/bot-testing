@@ -18,7 +18,7 @@ Segnali osservabili lato client:
 - Redirect a challenge page o pagina di errore generica
 - Tempo trascorso e numero di richieste prima del primo blocco
 
-Non e' previsto accesso diretto a dashboard o log FortiGate lato test.
+Non è previsto accesso diretto a dashboard o log FortiGate lato test.
 
 ## Matrice BOT
 
@@ -42,9 +42,9 @@ I BOT sono volutamente **palesi**: nessuna evasione. Il test misura la baseline 
 - Distribuzione multi-VM Linode prevista dalla specifica ma **attualmente fuori scope** (decisione utente 2026-04-24: esecuzione locale).
 - No Kubernetes.
 
-## Pianificazione attivita' (da specifica, sez. 7)
+## Pianificazione attività (da specifica, sez. 7)
 
-| Giorno | Attivita' | Output atteso |
+| Giorno | Attività | Output atteso |
 |---|---|---|
 | 1 | Provisioning VM lab, repo Python, Dockerfile, logger, reporter, smoke test Playwright | Container deployabile |
 | 2 | Sviluppo BOT-1 DoS | BOT-1 funzionante |
@@ -53,7 +53,7 @@ I BOT sono volutamente **palesi**: nessuna evasione. Il test misura la baseline 
 | 5 | Sviluppo BOT-3 registration + distribuzione multi-VM + report consolidato | BOT-3 e report |
 | Buffer | Iterazione su BOT che non hanno innescato detection, taratura parametri | Adeguamento parametri |
 
-Adattamento locale del piano sara' documentato in changelog man mano.
+Adattamento locale del piano sarà documentato in changelog man mano.
 
 ## Out of scope (dalla specifica, sez. 8)
 

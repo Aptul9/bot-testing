@@ -5,10 +5,10 @@
 Knowledge base operativa del progetto `bot-testing` (validazione WAF Fortinet antiBot Ad Arte). Schema basato su `07_memory_and_operational_context.md` delle istruzioni operative.
 
 Doppio obiettivo:
-- **Continuita' cross-session**: una nuova chat deve poter ripartire da zero leggendo questa cartella.
+- **Continuità cross-session**: una nuova chat deve poter ripartire da zero leggendo questa cartella.
 - **Collaborazione multi-persona**: chiunque subentri ricostruisce il contesto senza dipendere da conoscenza implicita di chi ha iniziato.
 
-Se un file di questa cartella non e' sufficiente a ricostruire il contesto, e' incompleto e va aggiornato.
+Se un file di questa cartella non è sufficiente a ricostruire il contesto, è incompleto e va aggiornato.
 
 ## Struttura
 
@@ -23,7 +23,7 @@ Se un file di questa cartella non e' sufficiente a ricostruire il contesto, e' i
 | `06_changelog.md` | [CHANGELOG] | Timeline operativa |
 | `07_objectives.md` | contesto | Obiettivo tecnico e di business, matrice BOT |
 | `08_endpoints.md` | contesto | Elenco completo endpoint target per categoria protezione WAF |
-| `secrets.md.example` | - | Template per credenziali (il file reale `secrets.md` e' in .gitignore) |
+| `secrets.md.example` | - | Template per credenziali (il file reale `secrets.md` è in .gitignore) |
 
 ## Regole di manutenzione
 
@@ -31,12 +31,12 @@ Se un file di questa cartella non e' sufficiente a ricostruire il contesto, e' i
 - I timestamp nel changelog seguono il formato `[YYYY-MM-DD HH:MM:SS]`.
 - Stile impersonale e passivo. No emoji. No em dash. No prima persona.
 - Le credenziali in chiaro NON vanno in questi file. Vanno in `secrets.md` locale (gitignored).
-- Il repo e' privato su GitHub. Se torna pubblico, rimuovere/mascherare `secrets.md.example` e ogni riferimento a nome utente reale, prima del push.
+- Il repo è privato su GitHub. Se torna pubblico, rimuovere/mascherare `secrets.md.example` e ogni riferimento a nome utente reale, prima del push.
 
 ## Come orientarsi da nuova chat
 
 1. Leggere `07_objectives.md` per capire cosa stiamo facendo.
 2. Leggere `01_infrastructure.md` + `08_endpoints.md` per il target tecnico.
-3. Leggere `05_quirks.md` per sapere cosa NON fare e cosa e' bloccante.
+3. Leggere `05_quirks.md` per sapere cosa NON fare e cosa è bloccante.
 4. Leggere `06_changelog.md` per l'ultimo stato operativo.
 5. Se serve eseguire contro ambiente: leggere `02_operations_access.md` + caricare `secrets.md` locale.

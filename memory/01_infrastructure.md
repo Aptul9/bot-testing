@@ -2,7 +2,7 @@
 
 ## Ambiente di test
 
-Target unico per questa iniziativa: **ambiente di collaudo** Ad Arte. La produzione e' esplicitamente fuori scope.
+Target unico per questa iniziativa: **ambiente di collaudo** Ad Arte. La produzione è esplicitamente fuori scope.
 
 | Elemento | Valore |
 |---|---|
@@ -49,8 +49,8 @@ Per elenco completo endpoint applicativi target vedere `08_endpoints.md`.
 ```
 
 - I BOT girano **in locale** (decisione utente 2026-04-24), non su VM Linode.
-- Il traffico deve transitare attraverso il WAF, altrimenti il test non e' valido.
-- Non e' previsto accesso a dashboard FortiGate o log diretti del WAF lato test: misurazione basata solo su segnali client-side (codici HTTP, reset, timeout, challenge page).
+- Il traffico deve transitare attraverso il WAF, altrimenti il test non è valido.
+- Non è previsto accesso a dashboard FortiGate o log diretti del WAF lato test: misurazione basata solo su segnali client-side (codici HTTP, reset, timeout, challenge page).
 - Log FortiGate richiesti al SOC **a test concluso**, come riscontro indipendente.
 
 ## Fuori scope infrastruttura

@@ -7,21 +7,23 @@
 | 1 | IP esecutore NON presente in whitelist WAF Ad Arte | SOC | Da verificare prima di ogni run reale |
 | 2 | Credenziali test collaudo (login, reset password, registration) | Cliente | Non fornite |
 | 3 | Lista esatta endpoint "pagine di ricerca" per BOT-1 DoS | Cliente | Non presente negli Excel forniti |
-| 4 | Scope "locale": se i BOT colpiscono il WAF di collaudo dalla macchina Samuele o solo dry-run | Utente | Da confermare |
-| 5 | Branching strategy (main diretto o feature + PR) | Utente | Default provvisorio: main |
-| 6 | Python 3.12 in locale (installazione richiesta?) oppure sviluppo su 3.11 + release solo Docker 3.12 | Utente | Default provvisorio: 3.11 locale, 3.12 in Docker |
+| 4 | Scope "locale": se i BOT colpiscono il WAF di collaudo dalla macchina locale o solo dry-run | Utente | Da confermare |
 
-L'esecuzione dei BOT contro il WAF non puo' partire finche' i prerequisiti 1, 2, 3 non sono chiusi.
+Prerequisiti chiusi:
+- **Branching** (2026-04-24): feature branch + PR su `main`, conventional commits. Dettaglio in `03_pipelines.md`.
+- **Python 3.12 locale** (2026-04-24): Python 3.12 gestito da `uv` (no installazione system-wide). Dev/prod parity con il Dockerfile.
+
+L'esecuzione dei BOT contro il WAF non può partire finché i prerequisiti 1, 2, 3 non sono chiusi.
 
 ## Rischi noti (dalla specifica, tabella R1-R5)
 
 | ID | Rischio | Mitigazione |
 |---|---|---|
-| R1 | IP sorgente gia' segnalati come malevoli in liste pubbliche | Selezione IP puliti, monitoring del primo response |
+| R1 | IP sorgente già segnalati come malevoli in liste pubbliche | Selezione IP puliti, monitoring del primo response |
 | R2 | Soglia WAF molto alta: i BOT non innescano alcuna protezione | Incremento progressivo di concorrenza e durata |
 | R3 | Blocco generalizzato del servizio Ad Arte se il DoS impatta backend condivisi | **Avvio a concorrenza bassa, escalation graduale** |
 | R4 | Consumo RAM elevato di Playwright su VM piccole | Minimo 8 GB RAM per BOT browser-based (non rilevante in locale se macchina sufficiente) |
-| R5 | IP esecutori coincidono con whitelist gia' configurata sul WAF | Incrocio preventivo con SOC |
+| R5 | IP esecutori coincidono con whitelist già configurata sul WAF | Incrocio preventivo con SOC |
 
 ## Vincoli comportamentali dei BOT
 
@@ -47,10 +49,10 @@ L'esecuzione dei BOT contro il WAF non puo' partire finche' i prerequisiti 1, 2,
 
 ## Sicurezza repo
 
-- Repo `Aptul9/bot-testing` su GitHub: **deve restare privato** finche' memory/ contiene riferimenti operativi non banali.
+- Repo `Aptul9/bot-testing` su GitHub: **deve restare privato** finché memory/ contiene riferimenti operativi non banali.
 - Qualsiasi credenziale, token, refresh token, chiave API: NON nei file tracciati. Solo in `memory/secrets.md` (gitignored).
 - Prima di ogni commit, verificare con `git diff --cached` che non siano incluse stringhe segrete.
 
-## Ambigui gia' chiariti
+## Ambigui già chiariti
 
-- Memoria e' nel repo (non in `~/Desktop/memory/` come da schema 07 standard). Decisione utente 2026-04-24 per consentire continuita' multi-chat multi-persona. Il tradeoff (repo privato obbligatorio, split secrets) e' esplicitato in `00_index.md`.
+- Memoria è nel repo (non in `~/Desktop/memory/` come da schema 07 standard). Decisione utente 2026-04-24 per consentire continuità multi-chat multi-persona. Il tradeoff (repo privato obbligatorio, split secrets) è esplicitato in `00_index.md`.
