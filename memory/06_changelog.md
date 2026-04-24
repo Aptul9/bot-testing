@@ -45,5 +45,6 @@ Formato: `[YYYY-MM-DD HH:MM:SS] Evento`.
 - Checks locali green: ruff format + ruff check OK, mypy strict OK (21 file), pytest 15/15, CLI `--help` e `--version` funzionanti.
 - Fix ruff UP042: `WafSignal(str, Enum)` sostituito con `WafSignal(StrEnum)` (Python 3.11+).
 - Commit `da09b08` su `feature/scaffolding`, pushato su origin.
+- PR [#1](https://github.com/Aptul9/bot-testing/pull/1) aperta e mergiata via squash su `main` (commit `e34e129`). Branch `feature/scaffolding` eliminato da remote e local.
 
 Prerequisiti bloccanti ancora aperti (vedi `05_quirks.md`): whitelist IP (SOC), credenziali test (Cliente), lista endpoint search BOT-1 (Cliente), conferma scope locale (Utente).
