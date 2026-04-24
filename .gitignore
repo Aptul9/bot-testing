@@ -1,0 +1,48 @@
+# Credenziali e segreti operativi (vedi memory/00_index.md)
+memory/secrets.md
+memory/secrets.yaml
+memory/secrets.*.md
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+.venv/
+venv/
+env/
+
+# Playwright
+playwright-report/
+test-results/
+/playwright/.cache/
+
+# Output locali dei BOT
+output/
+reports/local/
+*.har
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Docker artefatti locali
+.docker/
