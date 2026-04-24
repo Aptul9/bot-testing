@@ -50,5 +50,8 @@ Formato: `[YYYY-MM-DD HH:MM:SS] Evento`.
 - Pre-commit hooks installati localmente (`.git/hooks/pre-commit`).
 - GitHub Actions workflow aggiunto (`.github/workflows/ci.yml`): job `checks` (ruff format, ruff lint, mypy strict, pytest) + job `docker` (build senza push, cache GHA). Trigger push/PR su `main`.
 - Docker build locale `waf-bots:dev` lanciato in background per validazione Dockerfile.
+- Dockerfile fix: `README.md` copiato prima di `uv run`, altrimenti la resolve metadata di hatchling fallisce.
+- CI GitHub Actions prima esecuzione verde: job `checks` 16s, job `docker build` 2m25s.
+- PR [#2](https://github.com/Aptul9/bot-testing/pull/2) mergiata via squash su `main` (commit `55f597c`). Branch `feature/ci` eliminato.
 
 Prerequisiti bloccanti ancora aperti (vedi `05_quirks.md`): whitelist IP (SOC), credenziali test (Cliente), lista endpoint search BOT-1 (Cliente), conferma scope locale (Utente).
