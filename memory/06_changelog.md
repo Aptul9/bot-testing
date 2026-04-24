@@ -35,6 +35,15 @@ Formato: `[YYYY-MM-DD HH:MM:SS] Evento`.
   - Docker: `python:3.12-slim` + Playwright installato in build.
   - Branching: feature branch + PR su `main`, conventional commits.
   - Pre-commit hooks: ruff + mypy.
-- Fix: accenti italiani reali in tutti i file memory (à, è, é, ì, ò, ù) rimpiazzando il workaround `a'`, `e'`, `u'`, ... come da regola `11_domain_documents.md`.
+- Fix: accenti italiani reali in tutti i file memory (à, è, é, ì, ò, ù) rimpiazzando il workaround `a'`, `e'`, `u'`, ... come da regola `11_domain_documents.md`. Commit `b4c8305`.
+- Branch `feature/scaffolding` creato da `main`.
+- Scaffolding Python completato: `pyproject.toml` (PEP 621, Python 3.12, httpx + Playwright + dev tools), src-layout `src/waf_bots/` con `cli.py`, `common/` (logger JSON, client httpx async, browser Playwright, classifier segnali WAF, reporter), stub dei 5 BOT (`bots/dos.py`, `ato.py`, `registration.py`, `content_scraping.py`, `price_scraping.py`).
+- Test: `test_cli.py`, `test_waf_signals.py`, `test_reporter.py` - 15/15 passed.
+- Tooling: `.pre-commit-config.yaml`, `.python-version` (3.12), `.dockerignore`.
+- Dockerfile: `python:3.12-slim` + uv + Playwright chromium con system deps, utente non-root `botrunner`, ENTRYPOINT `python -m waf_bots`.
+- `README.md`: setup uv, uso CLI, struttura, prerequisiti bloccanti.
+- Checks locali green: ruff format + ruff check OK, mypy strict OK (21 file), pytest 15/15, CLI `--help` e `--version` funzionanti.
+- Fix ruff UP042: `WafSignal(str, Enum)` sostituito con `WafSignal(StrEnum)` (Python 3.11+).
+- Commit `da09b08` su `feature/scaffolding`, pushato su origin.
 
 Prerequisiti bloccanti ancora aperti (vedi `05_quirks.md`): whitelist IP (SOC), credenziali test (Cliente), lista endpoint search BOT-1 (Cliente), conferma scope locale (Utente).
