@@ -46,5 +46,9 @@ Formato: `[YYYY-MM-DD HH:MM:SS] Evento`.
 - Fix ruff UP042: `WafSignal(str, Enum)` sostituito con `WafSignal(StrEnum)` (Python 3.11+).
 - Commit `da09b08` su `feature/scaffolding`, pushato su origin.
 - PR [#1](https://github.com/Aptul9/bot-testing/pull/1) aperta e mergiata via squash su `main` (commit `e34e129`). Branch `feature/scaffolding` eliminato da remote e local.
+- Branch `feature/ci` creato da `main`.
+- Pre-commit hooks installati localmente (`.git/hooks/pre-commit`).
+- GitHub Actions workflow aggiunto (`.github/workflows/ci.yml`): job `checks` (ruff format, ruff lint, mypy strict, pytest) + job `docker` (build senza push, cache GHA). Trigger push/PR su `main`.
+- Docker build locale `waf-bots:dev` lanciato in background per validazione Dockerfile.
 
 Prerequisiti bloccanti ancora aperti (vedi `05_quirks.md`): whitelist IP (SOC), credenziali test (Cliente), lista endpoint search BOT-1 (Cliente), conferma scope locale (Utente).
