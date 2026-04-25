@@ -2,7 +2,9 @@
 
 BOT client per la validazione delle protezioni antiBot del WAF Fortinet FortiGate sull'ambiente di collaudo Ad Arte.
 
-Contesto, obiettivi, matrice BOT, endpoint target, rischi e prerequisiti sono documentati in `memory/` (lettura consigliata in ordine: `07_objectives.md`, `01_infrastructure.md`, `08_endpoints.md`, `05_quirks.md`).
+Contesto operativo, obiettivi, matrice BOT, endpoint target, rischi, prerequisiti, decisioni e timeline vivono nel **vault Obsidian** del singolo operatore: nota `01_Projects/antibot.md`. Le credenziali stanno nel lockbox `02_Areas/_secrets/antibot.md` (escluso da qualsiasi sync). Repo e vault sono separati per design: il repo contiene solo codice, il vault contiene la knowledge base.
+
+Chi subentra senza vault: chiedere all'owner del progetto i due file di vault (`antibot.md` + `_secrets/antibot.md`).
 
 ## Requisiti
 
@@ -64,7 +66,6 @@ uv run pre-commit install
 
 ```
 .
-├── memory/                 # Knowledge base operativa (schema 07)
 ├── src/waf_bots/
 │   ├── cli.py              # Entry point CLI
 │   ├── bots/               # Un modulo per BOT (dos, ato, registration, content/price scraping)
@@ -72,8 +73,11 @@ uv run pre-commit install
 ├── tests/                  # Unit + smoke
 ├── Dockerfile              # Immagine singola py3.12-slim + Playwright
 ├── pyproject.toml          # Metadata progetto + config tool (ruff, mypy, pytest)
+├── .github/workflows/ci.yml
 └── .pre-commit-config.yaml # Hook: ruff, mypy, check comuni
 ```
+
+Knowledge base operativa: nel vault Obsidian del singolo operatore (vedi sezione introduttiva).
 
 ## BOT
 
@@ -93,7 +97,7 @@ Prima di eseguire contro l'ambiente reale:
 2. Ottenimento delle credenziali di test collaudo (Keycloak realm `AD-Arte-visitors`).
 3. Conferma degli endpoint di search per BOT-1.
 
-Dettagli e stato aggiornato in [`memory/05_quirks.md`](memory/05_quirks.md).
+Dettagli e stato aggiornato nel vault Obsidian: `01_Projects/antibot.md` sezioni `## Blockers` e `## Vincoli operativi e rischi`.
 
 ## Licenza
 
