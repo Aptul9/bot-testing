@@ -1,7 +1,8 @@
 """BOT-1 Denial of Service. Target: pagine di ricerca.
 
 Implementazione prevista in fase successiva. Richiede la lista esatta degli
-endpoint di search (prerequisito bloccante #3 in `memory/05_quirks.md`).
+endpoint di search (vedi sezione `## Blockers` nella nota di progetto antibot
+nel vault Obsidian del singolo operatore).
 """
 
 from __future__ import annotations

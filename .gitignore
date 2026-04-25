@@ -1,7 +1,5 @@
-# Credenziali e segreti operativi (vedi memory/00_index.md)
-memory/secrets.md
-memory/secrets.yaml
-memory/secrets.*.md
+# Credenziali operative: NON nel repo. Vivono nel vault Obsidian del singolo operatore
+# (cartella 02_Areas/_secrets/, vedere README e nota progetto antibot).
 .env
 .env.*
 !.env.example
