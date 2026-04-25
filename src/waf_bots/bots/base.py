@@ -21,10 +21,18 @@ class Bot(ABC):
 
     name: str
 
-    def __init__(self, base_url: str, duration_s: int, concurrency: int = 1) -> None:
+    def __init__(
+        self,
+        base_url: str,
+        duration_s: int,
+        concurrency: int = 1,
+        *,
+        dry_run: bool = True,
+    ) -> None:
         self.base_url = base_url
         self.duration_s = duration_s
         self.concurrency = max(1, concurrency)
+        self.dry_run = dry_run
 
     async def setup(self) -> None:  # noqa: B027 - template method, override opzionale
         """Inizializzazione prima del loop. Default: no-op."""
@@ -53,6 +61,7 @@ class Bot(ABC):
             base_url=self.base_url,
             duration_s=self.duration_s,
             concurrency=self.concurrency,
+            dry_run=self.dry_run,
         )
 
         start = time.monotonic()

@@ -36,8 +36,15 @@ class BrowserBot(Bot):
 
     paths: ClassVar[Sequence[str]] = ()
 
-    def __init__(self, base_url: str, duration_s: int, concurrency: int = 1) -> None:
-        super().__init__(base_url, duration_s, concurrency)
+    def __init__(
+        self,
+        base_url: str,
+        duration_s: int,
+        concurrency: int = 1,
+        *,
+        dry_run: bool = True,
+    ) -> None:
+        super().__init__(base_url, duration_s, concurrency, dry_run=dry_run)
         if not self.paths:
             raise ValueError(f"{type(self).__name__}.paths non puo' essere vuoto")
         self._pw: Playwright | None = None
@@ -45,6 +52,8 @@ class BrowserBot(Bot):
         self._context: BrowserContext | None = None
 
     async def setup(self) -> None:
+        if self.dry_run:
+            return
         self._pw = await async_playwright().start()
         self._browser = await self._pw.chromium.launch(headless=True)
         self._context = await self._browser.new_context()
@@ -69,8 +78,13 @@ class BrowserBot(Bot):
         )
 
     async def issue_request(self, worker_id: int, sequence: int) -> WafObservation:
+        if self.dry_run:
+            # Dry-run: nessuna navigazione reale, restituisco osservazione neutra.
+            return WafObservation(WafSignal.NONE, None, None, 0.0)
         if self._context is None:
-            raise RuntimeError("BrowserBot.setup() non eseguito")
+            raise RuntimeError(
+                "BrowserBot.setup() non eseguito (dry_run=False richiede Playwright)"
+            )
         url = self._next_url(sequence)
         page = await self._context.new_page()
         start = time.monotonic()
