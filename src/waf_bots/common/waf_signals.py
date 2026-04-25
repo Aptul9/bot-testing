@@ -16,6 +16,11 @@ class WafSignal(StrEnum):
     CHALLENGE_REDIRECT = "challenge_redirect"
 
 
+def is_block_signal(signal: WafSignal) -> bool:
+    """Vero se il segnale rappresenta un'azione di mitigazione del WAF."""
+    return signal is not WafSignal.NONE
+
+
 @dataclass(frozen=True)
 class WafObservation:
     signal: WafSignal
@@ -28,6 +33,7 @@ _CHALLENGE_TOKENS = ("challenge", "captcha", "block", "waf", "interstitial")
 
 
 def classify(status_code: int | None, location: str | None) -> WafSignal:
+    """Classificazione dei segnali WAF basata su status code e header Location."""
     if status_code == 403:
         return WafSignal.BLOCKED_403
     if status_code == 429:
