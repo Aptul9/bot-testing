@@ -1,8 +1,10 @@
-"""Factory per client httpx async usato dai BOT HTTP-only."""
+"""Factory e helper per client httpx async usato dai BOT HTTP-only."""
 
 from __future__ import annotations
 
 import httpx
+
+from waf_bots.common.waf_signals import WafObservation, WafSignal, classify
 
 DEFAULT_TIMEOUT = httpx.Timeout(connect=10.0, read=30.0, write=30.0, pool=10.0)
 DEFAULT_USER_AGENT = "waf-bots/0.1 (intentional-bot)"
@@ -29,4 +31,36 @@ def create_client(
         verify=verify,
         http2=http2,
         follow_redirects=False,
+    )
+
+
+def observe_response(response: httpx.Response, elapsed_ms: float) -> WafObservation:
+    """Trasforma una risposta httpx in WafObservation."""
+    location = response.headers.get("location") if response.is_redirect else None
+    return WafObservation(
+        signal=classify(response.status_code, location),
+        status_code=response.status_code,
+        location=location,
+        elapsed_ms=elapsed_ms,
+    )
+
+
+def observe_exception(exc: BaseException, elapsed_ms: float) -> WafObservation:
+    """Trasforma un'eccezione httpx in WafObservation.
+
+    Connect/Read/RemoteProtocol -> CONNECTION_RESET.
+    Timeout (qualsiasi tipo) -> TIMEOUT.
+    Altre eccezioni -> NONE (non riconosciute come segnali WAF).
+    """
+    if isinstance(exc, httpx.TimeoutException):
+        signal = WafSignal.TIMEOUT
+    elif isinstance(exc, httpx.ConnectError | httpx.ReadError | httpx.RemoteProtocolError):
+        signal = WafSignal.CONNECTION_RESET
+    else:
+        signal = WafSignal.NONE
+    return WafObservation(
+        signal=signal,
+        status_code=None,
+        location=None,
+        elapsed_ms=elapsed_ms,
     )

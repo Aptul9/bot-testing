@@ -1,10 +1,13 @@
-"""Smoke test sul parser CLI."""
+"""Smoke test sul parser CLI e dispatch dei BOT."""
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 
-from waf_bots.cli import BOT_NAMES, build_parser
+from waf_bots.cli import BOT_NAMES, build_parser, main
 
 
 def test_cli_help_exits_zero() -> None:
@@ -26,12 +29,19 @@ def test_cli_rejects_unknown_bot() -> None:
         parser.parse_args(["--bot", "bot-99-unknown"])
 
 
-def test_cli_parses_minimum() -> None:
+def test_cli_parses_minimum_with_default_dry_run() -> None:
     parser = build_parser()
     args = parser.parse_args(["--bot", "bot-1-dos"])
     assert args.bot == "bot-1-dos"
     assert args.duration == 60
     assert args.concurrency == 1
+    assert args.dry_run is True
+
+
+def test_cli_dry_run_flag_can_be_disabled() -> None:
+    parser = build_parser()
+    args = parser.parse_args(["--bot", "bot-1-dos", "--no-dry-run"])
+    assert args.dry_run is False
 
 
 def test_cli_full_args() -> None:
@@ -48,6 +58,7 @@ def test_cli_full_args() -> None:
             "https://example.invalid",
             "--output",
             "/tmp/out.json",
+            "--no-dry-run",
         ]
     )
     assert args.bot == "bot-2-ato"
@@ -55,8 +66,40 @@ def test_cli_full_args() -> None:
     assert args.concurrency == 4
     assert args.base_url == "https://example.invalid"
     assert args.output == "/tmp/out.json"
+    assert args.dry_run is False
 
 
 def test_bot_names_set() -> None:
     assert len(BOT_NAMES) == 5
     assert len(set(BOT_NAMES)) == 5
+
+
+def test_main_dry_run_dos_writes_json_to_stdout(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    rc = main(["--bot", "bot-1-dos", "--duration", "1"])
+    assert rc == 0
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert payload["bot"] == "bot-1-dos"
+    assert payload["metadata"]["dry_run"] is True
+
+
+def test_main_dry_run_writes_to_output_file(tmp_path: Path) -> None:
+    out = tmp_path / "report.json"
+    rc = main(["--bot", "bot-5-price-scraping", "--duration", "1", "--output", str(out)])
+    assert rc == 0
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["bot"] == "bot-5-price-scraping"
+
+
+def test_main_unimplemented_bot_returns_2(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    # bot-3 e' ancora stub (issue_request raises NotImplementedError)
+    rc = main(["--bot", "bot-3-registration", "--duration", "1"])
+    # In dry-run il BrowserBot/HttpBot non ha bisogno di issue_request,
+    # ma bot-3 e' ancora un Bot puro che alza NotImplementedError.
+    assert rc == 2
+    err = capsys.readouterr().err
+    assert "BOT-3" in err or "non ancora implementato" in err
