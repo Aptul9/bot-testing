@@ -1,51 +1,89 @@
 # waf-bots
 
-BOT client per la validazione delle protezioni antiBot del WAF Fortinet FortiGate sull'ambiente di collaudo Ad Arte.
+BOT client for validation of the antiBot policies on the Fortinet FortiGate WAF in the Ad Arte collaudo environment.
 
-Contesto operativo, obiettivi, matrice BOT, endpoint target, rischi, prerequisiti, decisioni e timeline vivono nel **vault Obsidian** del singolo operatore: nota `01_Projects/antibot.md`. Le credenziali stanno nel lockbox `02_Areas/_secrets/antibot.md` (escluso da qualsiasi sync). Repo e vault sono separati per design: il repo contiene solo codice, il vault contiene la knowledge base.
+Operational context, objectives, BOT matrix, endpoint targets, risks, prerequisites, decisions and timeline live in the operator's **Obsidian vault**: project page `01_Projects/antibot.md`. Credentials live in the lockbox `02_Areas/_secrets/antibot.md` (excluded from any sync). Repo and vault are separated by design: the repo holds code only, the vault holds the knowledge base.
 
-Chi subentra senza vault: chiedere all'owner del progetto i due file di vault (`antibot.md` + `_secrets/antibot.md`).
+If you onboard without the vault: ask the project owner for the two vault files (`antibot.md` and `_secrets/antibot.md`).
 
-## Requisiti
+## Requirements
 
-- Python 3.12 (gestito automaticamente da `uv`)
-- [`uv`](https://docs.astral.sh/uv/) 0.11 o successivo
-- Docker (per la build dell'immagine di distribuzione)
+- Python 3.12 (managed automatically by `uv`)
+- [`uv`](https://docs.astral.sh/uv/) 0.11 or later
+- Docker (for the distribution image build)
+- Linode CLI (for fleet provisioning, optional for local dev)
 
-## Setup locale
+## Local setup
 
 ```bash
-# Installazione uv (se non presente)
+# Install uv (if missing)
 python -m pip install --user uv
 
-# Python 3.12 gestito da uv
+# Python 3.12 managed by uv
 uv python install 3.12
 
-# Creazione venv + installazione dipendenze (prod + dev)
+# Create venv + install deps (prod + dev)
 uv sync
 
-# Installazione browser Chromium per Playwright
+# Install Chromium for Playwright (needed by BOT-3/4/5)
 uv run playwright install chromium
 ```
 
-## Uso
+## Local usage (dev / dry-run)
 
 ```bash
-# Esecuzione di un BOT (implementazione in corso)
+# Run a BOT in dry-run mode (default - no real HTTP traffic)
 uv run waf-bots --bot bot-1-dos --duration 60 --concurrency 4
 
-# Elenco dei BOT supportati
+# List supported BOTs and flags
 uv run waf-bots --help
 ```
 
-Con Docker:
+With Docker:
 
 ```bash
 docker build -t waf-bots:dev .
 docker run --rm waf-bots:dev --bot bot-1-dos --duration 60
 ```
 
-## Sviluppo
+## Real run (collaudo target)
+
+Real run requires the prerequisites tracked in `01_Projects/antibot.md` `## Blockers` (vault) to be closed:
+
+1. SOC confirmed executor IPs NOT in WAF whitelist
+2. Client provided test credentials (Keycloak realm `AD-Arte-visitors`)
+3. Client confirmed search endpoints list (for BOT-1 DoS)
+4. User confirmed local scope vs Linode fleet
+
+For the Linode fleet path (recommended once prereqs unlocked):
+
+```bash
+# 1. Token from lockbox
+export LINODE_CLI_TOKEN="<from 02_Areas/_secrets/linode.md>"
+
+# 2. Provision (idempotent, safe to re-run)
+export STACKSCRIPT_ID=<id from one-time setup>
+export REGION=nl-ams
+./scripts/provision-fleet.sh
+
+# 3. Wait 3-5 min for cloud-init / StackScript completion on each VM
+
+# 4. Trigger BOT runs (see scripts/README.md for the full per-VM loop)
+
+# 5. Collect + consolidate reports
+./scripts/collect-reports.sh
+
+# 6. Teardown
+./scripts/teardown-fleet.sh --yes
+```
+
+Detailed flow + one-time setup steps in [`scripts/README.md`](scripts/README.md).
+
+Comprehensive Linode reference (regions, types, pricing, StackScripts, lessons learned): `custom-instructions/linode.md` in the operational instructions.
+
+**Pre-mortem mandatory for BOT-1 DoS real runs**: see [`docs/pre-mortem-bot-1.md`](docs/pre-mortem-bot-1.md).
+
+## Development
 
 ```bash
 # Lint + format
@@ -55,50 +93,51 @@ uv run ruff format
 # Type check
 uv run mypy
 
-# Test
+# Tests
 uv run pytest
 
-# Hook pre-commit (una tantum)
+# Pre-commit hooks (one-time)
 uv run pre-commit install
 ```
 
-## Struttura
+## Repo structure
 
 ```
 .
 ├── src/waf_bots/
-│   ├── cli.py              # Entry point CLI
-│   ├── bots/               # Un modulo per BOT (dos, ato, registration, content/price scraping)
-│   └── common/             # Logger JSON, client httpx, browser Playwright, WAF signals, reporter
-├── tests/                  # Unit + smoke
-├── Dockerfile              # Immagine singola py3.12-slim + Playwright
-├── pyproject.toml          # Metadata progetto + config tool (ruff, mypy, pytest)
+│   ├── cli.py              # CLI entry point
+│   ├── bots/               # one module per BOT (dos, ato, registration, content/price scraping)
+│   │                       # plus base.py, http_bot.py, browser_bot.py
+│   └── common/             # JSON logger, httpx client, Playwright browser, WAF signals, reporter
+├── tests/                  # unit + smoke
+├── scripts/                # Linode fleet provisioning + teardown + collection
+├── docs/                   # pre-mortems, architecture notes
+├── Dockerfile              # python:3.12-slim + Playwright
+├── pyproject.toml          # project metadata + tool config (ruff, mypy, pytest)
+├── .env.example            # consumed env vars schema
 ├── .github/workflows/ci.yml
-└── .pre-commit-config.yaml # Hook: ruff, mypy, check comuni
+└── .pre-commit-config.yaml # ruff, mypy, common checks
 ```
 
-Knowledge base operativa: nel vault Obsidian del singolo operatore (vedi sezione introduttiva).
+Knowledge base: in the operator's Obsidian vault (see introduction).
 
-## BOT
+## BOT status
 
-| BOT | Categoria WAF | Tipo client | Stato |
+| BOT | WAF category | Client type | Status |
 |---|---|---|---|
-| BOT-1 | Denial of Service | HTTP async | stub |
-| BOT-2 | Account Takeover | HTTP async | stub |
-| BOT-3 | Creazione account automatizzata | Browser (Playwright) | stub |
-| BOT-4 | Content Scraping | Browser (Playwright) | stub |
-| BOT-5 | Price Scraping | Browser (Playwright) | stub |
+| BOT-1 | Denial of Service | HTTP async (httpx) | scaffold + dry-run safe (real run requires `WAF_BOTS_ALLOW_DOS=true`) |
+| BOT-2 | Account Takeover | HTTP async (httpx) | scaffold + dry-run safe |
+| BOT-3 | Automated account creation | Browser (Playwright) | stub - needs admin Keycloak |
+| BOT-4 | Content Scraping | Browser (Playwright) | scaffold + dry-run safe |
+| BOT-5 | Price Scraping | Browser (Playwright) | scaffold + dry-run safe |
 
-## Prerequisiti bloccanti
+## Safety defaults
 
-Prima di eseguire contro l'ambiente reale:
+- `--dry-run` is the default for every BOT. Real traffic requires `--no-dry-run`
+- BOT-1 DoS additionally requires `WAF_BOTS_ALLOW_DOS=true` env var on the run host
+- Teardown script (`scripts/teardown-fleet.sh`) defaults to dry-run; `--yes` required to delete VMs
+- All fleet VMs are tagged `antibot` so teardown is precise
 
-1. Verifica con il SOC che l'IP esecutore NON sia in whitelist WAF.
-2. Ottenimento delle credenziali di test collaudo (Keycloak realm `AD-Arte-visitors`).
-3. Conferma degli endpoint di search per BOT-1.
-
-Dettagli e stato aggiornato nel vault Obsidian: `01_Projects/antibot.md` sezioni `## Blockers` e `## Vincoli operativi e rischi`.
-
-## Licenza
+## License
 
 Proprietary - Prisma S.r.l.
