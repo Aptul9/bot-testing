@@ -56,6 +56,13 @@ jobs:
         with:
           context: .
           push: false
+          load: true
           tags: waf-bots:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Smoke - container --version + dry-run BOT-1
+        run: |
+          docker run --rm waf-bots:ci --version
+          docker run --rm waf-bots:ci --bot bot-1-dos --duration 1 \
+            | python -c "import json,sys; d=json.load(sys.stdin); assert d['bot']=='bot-1-dos' and d['metadata']['dry_run'] is True; print('smoke OK', d['requests_total'], 'requests')"

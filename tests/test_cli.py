@@ -35,7 +35,14 @@ def test_cli_parses_minimum_with_default_dry_run() -> None:
     assert args.bot == "bot-1-dos"
     assert args.duration == 60
     assert args.concurrency == 1
+    assert args.rps == 0.0
     assert args.dry_run is True
+
+
+def test_cli_rps_flag() -> None:
+    parser = build_parser()
+    args = parser.parse_args(["--bot", "bot-1-dos", "--rps", "2.5"])
+    assert args.rps == 2.5
 
 
 def test_cli_dry_run_flag_can_be_disabled() -> None:
@@ -93,13 +100,11 @@ def test_main_dry_run_writes_to_output_file(tmp_path: Path) -> None:
     assert payload["bot"] == "bot-5-price-scraping"
 
 
-def test_main_unimplemented_bot_returns_2(
-    capsys: pytest.CaptureFixture[str],
-) -> None:
-    # bot-3 e' ancora stub (issue_request raises NotImplementedError)
-    rc = main(["--bot", "bot-3-registration", "--duration", "1"])
-    # In dry-run il BrowserBot/HttpBot non ha bisogno di issue_request,
-    # ma bot-3 e' ancora un Bot puro che alza NotImplementedError.
-    assert rc == 2
-    err = capsys.readouterr().err
-    assert "BOT-3" in err or "non ancora implementato" in err
+def test_main_dry_run_bot3_returns_zero(tmp_path: Path) -> None:
+    # BOT-3 is now a BrowserBot subclass; dry-run no longer raises.
+    out = tmp_path / "report.json"
+    rc = main(["--bot", "bot-3-registration", "--duration", "1", "--output", str(out)])
+    assert rc == 0
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["bot"] == "bot-3-registration"
+    assert payload["metadata"]["dry_run"] is True

@@ -52,10 +52,17 @@ class HttpBot(Bot):
         concurrency: int = 1,
         *,
         dry_run: bool = True,
+        rps_per_worker: float = 0.0,
     ) -> None:
-        super().__init__(base_url, duration_s, concurrency, dry_run=dry_run)
+        super().__init__(
+            base_url,
+            duration_s,
+            concurrency,
+            dry_run=dry_run,
+            rps_per_worker=rps_per_worker,
+        )
         if not self.requests:
-            raise ValueError(f"{type(self).__name__}.requests non puo' essere vuoto")
+            raise ValueError(f"{type(self).__name__}.requests cannot be empty")
         self._client: httpx.AsyncClient | None = None
 
     async def setup(self) -> None:
@@ -78,9 +85,10 @@ class HttpBot(Bot):
                 status_code=None,
                 location=None,
                 elapsed_ms=0.0,
+                endpoint=spec.path,
             )
         if self._client is None:
-            raise RuntimeError("HttpBot.setup() non eseguito (dry_run=False richiede il client)")
+            raise RuntimeError("HttpBot.setup() not run (dry_run=False requires client)")
 
         start = time.monotonic()
         try:
@@ -93,6 +101,6 @@ class HttpBot(Bot):
             )
         except BaseException as exc:
             elapsed_ms = (time.monotonic() - start) * 1000
-            return observe_exception(exc, elapsed_ms)
+            return observe_exception(exc, elapsed_ms, endpoint=spec.path)
         elapsed_ms = (time.monotonic() - start) * 1000
-        return observe_response(response, elapsed_ms)
+        return observe_response(response, elapsed_ms, endpoint=spec.path)
