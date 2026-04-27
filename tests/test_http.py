@@ -1,4 +1,4 @@
-"""Test su observe_response e observe_exception."""
+"""Tests on observe_response and observe_exception."""
 
 from __future__ import annotations
 
@@ -14,10 +14,11 @@ def _build_response(status: int, headers: dict[str, str] | None = None) -> httpx
 
 
 def test_observe_response_200_none() -> None:
-    obs = observe_response(_build_response(200), elapsed_ms=12.5)
+    obs = observe_response(_build_response(200), elapsed_ms=12.5, endpoint="/x")
     assert obs.signal is WafSignal.NONE
     assert obs.status_code == 200
     assert obs.location is None
+    assert obs.endpoint == "/x"
 
 
 def test_observe_response_403_blocked() -> None:
@@ -37,9 +38,10 @@ def test_observe_response_503_unavailable() -> None:
 
 def test_observe_response_redirect_to_challenge() -> None:
     resp = _build_response(302, {"location": "https://x.example/challenge"})
-    obs = observe_response(resp, elapsed_ms=1.0)
+    obs = observe_response(resp, elapsed_ms=1.0, endpoint="/login")
     assert obs.signal is WafSignal.CHALLENGE_REDIRECT
     assert obs.location == "https://x.example/challenge"
+    assert obs.endpoint == "/login"
 
 
 def test_observe_response_redirect_benign() -> None:
@@ -61,6 +63,7 @@ def test_observe_response_redirect_benign() -> None:
     ],
 )
 def test_observe_exception(exc: BaseException, expected: WafSignal) -> None:
-    obs = observe_exception(exc, elapsed_ms=5.0)
+    obs = observe_exception(exc, elapsed_ms=5.0, endpoint="/foo")
     assert obs.signal is expected
     assert obs.status_code is None
+    assert obs.endpoint == "/foo"

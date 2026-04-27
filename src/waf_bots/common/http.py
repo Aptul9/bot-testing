@@ -1,4 +1,4 @@
-"""Factory e helper per client httpx async usato dai BOT HTTP-only."""
+"""Factory and helpers for the httpx async client used by HTTP-only BOTs."""
 
 from __future__ import annotations
 
@@ -17,11 +17,10 @@ def create_client(
     verify: bool = True,
     http2: bool = True,
 ) -> httpx.AsyncClient:
-    """Crea un client httpx async preconfigurato.
+    """Build a preconfigured httpx async client.
 
-    I default rendono il client palesemente riconoscibile come bot:
-    User-Agent esplicito, nessuna rotazione di header o fingerprint,
-    nessun follow_redirects (necessario per intercettare challenge WAF).
+    Defaults make the client overtly bot-like: explicit User-Agent, no header
+    rotation, no follow_redirects (so WAF challenge redirects are observable).
     """
     headers = {"User-Agent": user_agent}
     return httpx.AsyncClient(
@@ -34,23 +33,34 @@ def create_client(
     )
 
 
-def observe_response(response: httpx.Response, elapsed_ms: float) -> WafObservation:
-    """Trasforma una risposta httpx in WafObservation."""
+def observe_response(
+    response: httpx.Response,
+    elapsed_ms: float,
+    *,
+    endpoint: str | None = None,
+) -> WafObservation:
+    """Convert an httpx response into a WafObservation."""
     location = response.headers.get("location") if response.is_redirect else None
     return WafObservation(
         signal=classify(response.status_code, location),
         status_code=response.status_code,
         location=location,
         elapsed_ms=elapsed_ms,
+        endpoint=endpoint,
     )
 
 
-def observe_exception(exc: BaseException, elapsed_ms: float) -> WafObservation:
-    """Trasforma un'eccezione httpx in WafObservation.
+def observe_exception(
+    exc: BaseException,
+    elapsed_ms: float,
+    *,
+    endpoint: str | None = None,
+) -> WafObservation:
+    """Convert an httpx exception into a WafObservation.
 
     Connect/Read/RemoteProtocol -> CONNECTION_RESET.
-    Timeout (qualsiasi tipo) -> TIMEOUT.
-    Altre eccezioni -> NONE (non riconosciute come segnali WAF).
+    Timeout (any kind) -> TIMEOUT.
+    Other exceptions -> NONE (not recognized as WAF signals).
     """
     if isinstance(exc, httpx.TimeoutException):
         signal = WafSignal.TIMEOUT
@@ -63,4 +73,5 @@ def observe_exception(exc: BaseException, elapsed_ms: float) -> WafObservation:
         status_code=None,
         location=None,
         elapsed_ms=elapsed_ms,
+        endpoint=endpoint,
     )

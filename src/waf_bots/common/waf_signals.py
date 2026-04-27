@@ -1,4 +1,4 @@
-"""Classificazione di segnali WAF osservabili lato client."""
+"""WAF signal classification observable client-side."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ class WafSignal(StrEnum):
 
 
 def is_block_signal(signal: WafSignal) -> bool:
-    """Vero se il segnale rappresenta un'azione di mitigazione del WAF."""
+    """True if signal represents a WAF mitigation action."""
     return signal is not WafSignal.NONE
 
 
@@ -27,13 +27,14 @@ class WafObservation:
     status_code: int | None
     location: str | None
     elapsed_ms: float
+    endpoint: str | None = None
 
 
 _CHALLENGE_TOKENS = ("challenge", "captcha", "block", "waf", "interstitial")
 
 
 def classify(status_code: int | None, location: str | None) -> WafSignal:
-    """Classificazione dei segnali WAF basata su status code e header Location."""
+    """Classify WAF signal from status code and Location header."""
     if status_code == 403:
         return WafSignal.BLOCKED_403
     if status_code == 429:

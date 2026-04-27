@@ -51,7 +51,16 @@ def build_parser() -> argparse.ArgumentParser:
         "--concurrency",
         type=int,
         default=1,
-        help="Concorrenza per i BOT HTTP async. Ignorato dai BOT browser (default: 1)",
+        help="Concorrency for HTTP async BOTs. Ignored by browser BOTs (default: 1)",
+    )
+    parser.add_argument(
+        "--rps",
+        type=float,
+        default=0.0,
+        help=(
+            "Per-worker requests-per-second cap (default: 0 = no cap). "
+            "Aggregate target = rps * concurrency."
+        ),
     )
     parser.add_argument(
         "--base-url",
@@ -98,11 +107,12 @@ def main(argv: list[str] | None = None) -> int:
         duration_s=args.duration,
         concurrency=args.concurrency,
         dry_run=args.dry_run,
+        rps_per_worker=args.rps,
     )
 
     sys.stderr.write(
-        f"[waf-bots] avvio {args.bot} duration={args.duration}s "
-        f"concurrency={args.concurrency} dry_run={args.dry_run}\n"
+        f"[waf-bots] start {args.bot} duration={args.duration}s "
+        f"concurrency={args.concurrency} rps={args.rps} dry_run={args.dry_run}\n"
     )
     try:
         report = asyncio.run(bot.run())

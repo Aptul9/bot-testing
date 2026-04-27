@@ -28,7 +28,9 @@ class JsonFormatter(logging.Formatter):
 def get_logger(name: str) -> logging.Logger:
     logger = logging.getLogger(name)
     if not logger.handlers:
-        handler = logging.StreamHandler(sys.stdout)
+        # Logs go to stderr so stdout stays reserved for the JSON RunReport
+        # produced by the CLI dispatcher.
+        handler = logging.StreamHandler(sys.stderr)
         handler.setFormatter(JsonFormatter())
         logger.addHandler(handler)
         logger.setLevel(logging.INFO)

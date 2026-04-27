@@ -43,10 +43,17 @@ class BrowserBot(Bot):
         concurrency: int = 1,
         *,
         dry_run: bool = True,
+        rps_per_worker: float = 0.0,
     ) -> None:
-        super().__init__(base_url, duration_s, concurrency, dry_run=dry_run)
+        super().__init__(
+            base_url,
+            duration_s,
+            concurrency,
+            dry_run=dry_run,
+            rps_per_worker=rps_per_worker,
+        )
         if not self.paths:
-            raise ValueError(f"{type(self).__name__}.paths non puo' essere vuoto")
+            raise ValueError(f"{type(self).__name__}.paths cannot be empty")
         self._pw: Playwright | None = None
         self._browser: Browser | None = None
         self._context: BrowserContext | None = None
@@ -78,13 +85,12 @@ class BrowserBot(Bot):
         )
 
     async def issue_request(self, worker_id: int, sequence: int) -> WafObservation:
+        path = self.paths[(sequence - 1) % len(self.paths)]
         if self.dry_run:
-            # Dry-run: nessuna navigazione reale, restituisco osservazione neutra.
-            return WafObservation(WafSignal.NONE, None, None, 0.0)
+            # Dry-run: no real navigation, return neutral observation.
+            return WafObservation(WafSignal.NONE, None, None, 0.0, endpoint=path)
         if self._context is None:
-            raise RuntimeError(
-                "BrowserBot.setup() non eseguito (dry_run=False richiede Playwright)"
-            )
+            raise RuntimeError("BrowserBot.setup() not run (dry_run=False requires Playwright)")
         url = self._next_url(sequence)
         page = await self._context.new_page()
         start = time.monotonic()
@@ -95,14 +101,16 @@ class BrowserBot(Bot):
                 )
             except PlaywrightTimeoutError:
                 elapsed_ms = (time.monotonic() - start) * 1000
-                return WafObservation(WafSignal.TIMEOUT, None, None, elapsed_ms)
+                return WafObservation(WafSignal.TIMEOUT, None, None, elapsed_ms, endpoint=path)
             except PlaywrightError:
                 elapsed_ms = (time.monotonic() - start) * 1000
-                return WafObservation(WafSignal.CONNECTION_RESET, None, None, elapsed_ms)
+                return WafObservation(
+                    WafSignal.CONNECTION_RESET, None, None, elapsed_ms, endpoint=path
+                )
 
             elapsed_ms = (time.monotonic() - start) * 1000
             if response is None:
-                return WafObservation(WafSignal.NONE, None, None, elapsed_ms)
+                return WafObservation(WafSignal.NONE, None, None, elapsed_ms, endpoint=path)
             location = (
                 response.headers.get("location")
                 if response.status in (301, 302, 303, 307, 308)
@@ -113,6 +121,7 @@ class BrowserBot(Bot):
                 status_code=response.status,
                 location=location,
                 elapsed_ms=elapsed_ms,
+                endpoint=path,
             )
         finally:
             await page.close()

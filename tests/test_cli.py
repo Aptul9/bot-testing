@@ -35,7 +35,14 @@ def test_cli_parses_minimum_with_default_dry_run() -> None:
     assert args.bot == "bot-1-dos"
     assert args.duration == 60
     assert args.concurrency == 1
+    assert args.rps == 0.0
     assert args.dry_run is True
+
+
+def test_cli_rps_flag() -> None:
+    parser = build_parser()
+    args = parser.parse_args(["--bot", "bot-1-dos", "--rps", "2.5"])
+    assert args.rps == 2.5
 
 
 def test_cli_dry_run_flag_can_be_disabled() -> None:
