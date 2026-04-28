@@ -1,0 +1,8 @@
+# Force LF line endings on shell scripts and Dockerfiles regardless of
+# core.autocrlf on Windows checkouts. Without this, scripts uploaded as
+# Linode StackScript content carry \r and the remote bash refuses
+# `set -euo pipefail\r` on first parse, aborting silently. See
+# `custom-instructions/linode.md` § 17 lessons learned.
+
+*.sh   text eol=lf
+Dockerfile text eol=lf
