@@ -11,8 +11,8 @@
 #   WAF_BOTS_KEYCLOAK_BASE_URL       e.g. https://login-coll.museiitaliani.it
 #   WAF_BOTS_KEYCLOAK_REALM          AD-Arte-visitors
 #   WAF_BOTS_KEYCLOAK_ADMIN_CLIENT_ID  admin-cli
-#   WAF_BOTS_KEYCLOAK_ADMIN_USER     admin@arte-visitors.dom
-#   WAF_BOTS_KEYCLOAK_ADMIN_PASSWORD <see lockbox>
+#   WAF_BOTS_KEYCLOAK_ADMIN_USER     <admin user from operator's lockbox>
+#   WAF_BOTS_KEYCLOAK_ADMIN_PASSWORD <admin password from operator's lockbox>
 # Optional:
 #   COUNT                            default 2
 #   USERNAME_PREFIX                  default waf-test-visitor
