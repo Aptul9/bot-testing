@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Antibot Ad Arte" company="Prisma" webLink="https://github.com/Aptul9/bot-testing" view-date="2026-04-28" view-index="0" gantt-divider-location="380" resource-divider-location="300" version="3.3.3303" locale="it_IT">
+    <description><![CDATA[Validazione protezioni antiBot WAF Fortinet su ambiente di collaudo Ad Arte. 5 BOT (DoS, ATO, Registration, Content Scraping, Price Scraping) eseguiti da fleet Linode (5 VM in nl-ams) per dimostrare la corretta detection.]]></description>
+    <view zooming-state="default:6" id="gantt-chart">
+        <field id="tpd3" name="Nome" width="200" order="0"/>
+        <field id="tpd4" name="Inizio" width="80" order="1"/>
+        <field id="tpd5" name="Fine" width="80" order="2"/>
+        <field id="tpd6" name="Durata" width="50" order="3"/>
+        <option id="color.recent"><![CDATA[#000000 #2E7D32 #1565C0 #C62828 #6A1B9A #EF6C00]]></option>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Nome" width="210" order="0"/>
+        <field id="1" name="Ruolo" width="200" order="1"/>
+    </view>
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="1" name="Discovery e design" color="#2e7d32" meeting="false" start="2026-04-28" duration="2" complete="0" expand="true">
+            <notes><![CDATA[Lettura specifica, Excel endpoint, swagger collaudo. Decisioni architetturali (Linode fleet vs locale, dry-run safety, branching).]]></notes>
+            <depend id="2" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="2" name="Build core framework" color="#1565c0" meeting="false" start="2026-04-30" duration="3" complete="0" expand="true">
+            <notes><![CDATA[Repo, scaffolding Python (uv + ruff + mypy), Dockerfile, CI GitHub Actions, runner generico, WAF signals classifier, reporter Markdown.]]></notes>
+            <depend id="3" type="2" difference="0" hardness="Strong"/>
+            <depend id="6" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="3" name="Implementazione BOT" color="#1565c0" meeting="false" start="2026-05-05" duration="4" complete="0" expand="true">
+            <notes><![CDATA[3 stream paralleli sopra il core framework.]]></notes>
+            <task id="4" name="HTTP (BOT-1 DoS + BOT-2 ATO)" color="#1976d2" meeting="false" start="2026-05-05" duration="3" complete="0" expand="true">
+                <notes><![CDATA[httpx async, dry-run safe, BOT-1 con env safety WAF_BOTS_ALLOW_DOS.]]></notes>
+            </task>
+            <task id="5" name="Browser (BOT-4 Content + BOT-5 Price)" color="#1976d2" meeting="false" start="2026-05-05" duration="4" complete="0" expand="true">
+                <notes><![CDATA[Playwright Chromium headless, navigator.webdriver=true di default (no stealth).]]></notes>
+            </task>
+            <task id="7" name="Admin API (BOT-3 Registration)" color="#1976d2" meeting="false" start="2026-05-05" duration="3" complete="0" expand="true">
+                <notes><![CDATA[Keycloak realm AD-Arte-visitors, password grant + POST /admin/realms/.../users, refresh token su 401.]]></notes>
+            </task>
+            <depend id="9" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="6" name="Infrastruttura e credenziali" color="#ef6c00" meeting="false" start="2026-05-05" duration="2" complete="0" expand="true">
+            <notes><![CDATA[Stream parallelo: estrazione cred Keycloak da K8s collaudo + provisioning fleet Linode 5 VM in nl-ams (2x g6-standard-1 + 3x g6-standard-2).]]></notes>
+            <task id="8" name="Estrazione credenziali collaudo" color="#fb8c00" meeting="false" start="2026-05-05" duration="1" complete="0" expand="true"/>
+            <task id="10" name="Provisioning Linode fleet" color="#fb8c00" meeting="false" start="2026-05-06" duration="2" complete="0" expand="true">
+                <notes><![CDATA[SSH key + StackScript LF + 5 VM. Build immagine Docker su ciascuna VM tramite git clone (repo pubblico).]]></notes>
+            </task>
+            <depend id="9" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="9" name="SOC + esecuzione test" color="#c62828" meeting="false" start="2026-05-11" duration="3" complete="0" expand="true">
+            <notes><![CDATA[Mail SOC con IP fleet + attesa whitelist + run effettivo dei BOT.]]></notes>
+            <task id="11" name="Mail SOC + attesa whitelist" color="#d32f2f" meeting="false" start="2026-05-11" duration="2" complete="0" expand="true"/>
+            <task id="12" name="Run BOT-2/3/4/5 + BOT-1 con pre-mortem" color="#d32f2f" meeting="false" start="2026-05-13" duration="1" complete="0" expand="true"/>
+            <depend id="13" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="13" name="Report + delivery" color="#6a1b9a" meeting="false" start="2026-05-14" duration="2" complete="0" expand="true">
+            <notes><![CDATA[Consolidamento JSON->Markdown, integrazione log FortiGate forniti dal SOC, delivery cliente, teardown fleet.]]></notes>
+        </task>
+    </tasks>
+    <resources>
+        <resource id="0" name="Dev" function="Default:1" contacts="" phone=""/>
+        <resource id="1" name="SOC" function="Default:0" contacts="" phone=""/>
+        <resource id="2" name="Cliente Ad Arte" function="Default:0" contacts="" phone=""/>
+    </resources>
+    <allocations>
+        <allocation task-id="1" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="2" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="4" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="5" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="7" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="8" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="10" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="11" resource-id="1" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="12" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="13" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+    </allocations>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>
