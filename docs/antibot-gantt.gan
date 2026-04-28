@@ -1,16 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="Antibot Ad Arte" company="Prisma" webLink="https://github.com/Aptul9/bot-testing" view-date="2026-04-27" view-index="0" gantt-divider-location="380" resource-divider-location="300" version="2.8.11" locale="it_IT">
+<?xml version="1.0" encoding="UTF-8"?><project name="Antibot Ad Arte" company="Prisma" webLink="https://github.com/Aptul9/bot-testing" view-date="2026-04-27" view-index="0" gantt-divider-location="431" resource-divider-location="300" version="3.3.3316" locale="it_IT">
     <description><![CDATA[Validazione antiBot WAF Fortinet su collaudo Ad Arte. Ticket PSN aperto subito dopo discovery in modo che la wait corra in parallelo allo sviluppo.]]></description>
     <view zooming-state="default:6" id="gantt-chart">
-        <field id="tpd3" name="Nome" width="220" order="0"/>
-        <field id="tpd4" name="Inizio" width="80" order="1"/>
-        <field id="tpd5" name="Fine" width="80" order="2"/>
-        <field id="tpd6" name="Durata" width="50" order="3"/>
+        <field id="tpd3" name="Nome" width="212" order="0"/>
+        <field id="tpd4" name="Data d'inizio" width="77" order="1"/>
+        <field id="tpd5" name="Data di fine" width="77" order="2"/>
+        <field id="tpd6" name="Durata" width="49" order="3"/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="filter.dueTodayTasks" value="false"/>
+        <option id="filter.overdueTasks" value="false"/>
+        <option id="filter.inProgressTodayTasks" value="false"/>
     </view>
     <view id="resource-table">
         <field id="0" name="Nome" width="210" order="0"/>
-        <field id="1" name="Ruolo" width="200" order="1"/>
+        <field id="1" name="Ruolo predefinito" width="200" order="1"/>
     </view>
+    <!-- -->
     <calendars>
         <day-types>
             <day-type id="0"/>
@@ -34,35 +38,35 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="1" name="Discovery e design" color="#2e7d32" meeting="false" start="2026-04-27" duration="2" complete="0" expand="true">
+        <task id="1" uid="578931eff6464b659ca90123e4106b98" name="Discovery e design" color="#2e7d32" meeting="false" start="2026-04-27" duration="3" complete="0" expand="true">
             <depend id="2" type="2" difference="0" hardness="Strong"/>
             <depend id="4" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="2" name="Apertura ticket PSN whitelist WAF" color="#c62828" meeting="false" start="2026-04-29" duration="1" complete="0" expand="true">
+        <task id="2" uid="e2fd3392e10840b3a3b3a277be97363c" name="Apertura ticket PSN whitelist WAF" color="#c62828" meeting="false" start="2026-04-30" duration="1" complete="0" expand="true">
             <depend id="3" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="3" name="Wait PSN + whitelist applicata" color="#c62828" meeting="false" start="2026-04-30" duration="2" complete="0" expand="true">
+        <task id="3" uid="dc8c808c32474f3f861ff310445e6ce5" name="Wait PSN + whitelist applicata" color="#c62828" meeting="false" start="2026-05-01" duration="3" complete="0" expand="true">
             <depend id="12" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="4" name="Build core framework" color="#1565c0" meeting="false" start="2026-04-29" duration="3" complete="0" expand="true">
+        <task id="4" uid="838af8f0516e49c2baa8e420bae34ea8" name="Build core framework" color="#1565c0" meeting="false" start="2026-04-30" duration="5" complete="0" expand="true">
             <depend id="5" type="2" difference="0" hardness="Strong"/>
             <depend id="9" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="5" name="Implementazione BOT" color="#1565c0" meeting="false" start="2026-05-04" duration="4" complete="0" expand="true">
-            <task id="6" name="HTTP (BOT-1 DoS + BOT-2 ATO)" color="#1976d2" meeting="false" start="2026-05-04" duration="3" complete="0" expand="true"/>
-            <task id="7" name="Browser (BOT-4 + BOT-5)" color="#1976d2" meeting="false" start="2026-05-04" duration="4" complete="0" expand="true"/>
-            <task id="8" name="Admin API (BOT-3 Registration)" color="#1976d2" meeting="false" start="2026-05-04" duration="3" complete="0" expand="true"/>
+        <task id="5" uid="4f0c9aaf5ac9436fbea856f5a0caf4cd" name="Implementazione BOT" color="#1565c0" meeting="false" start="2026-05-07" duration="6" complete="0" expand="true">
             <depend id="12" type="2" difference="0" hardness="Strong"/>
+            <task id="6" uid="dc745e9b4f8741bcb15abdff8c2a8c4d" name="HTTP (BOT-1 DoS + BOT-2 ATO)" color="#1976d2" meeting="false" start="2026-05-07" duration="5" complete="0" expand="true"/>
+            <task id="7" uid="2d20955595e345acb4fa76fe05c75008" name="Browser (BOT-4 + BOT-5)" color="#1976d2" meeting="false" start="2026-05-07" duration="6" complete="0" expand="true"/>
+            <task id="8" uid="30cbe1ad30c2427485479fbeb42bdfed" name="Admin API (BOT-3 Registration)" color="#1976d2" meeting="false" start="2026-05-07" duration="5" complete="0" expand="true"/>
         </task>
-        <task id="9" name="Infrastruttura e credenziali" color="#ef6c00" meeting="false" start="2026-05-04" duration="2" complete="0" expand="true">
-            <task id="10" name="Estrazione credenziali collaudo" color="#fb8c00" meeting="false" start="2026-05-04" duration="1" complete="0" expand="true"/>
-            <task id="11" name="Provisioning Linode fleet" color="#fb8c00" meeting="false" start="2026-05-05" duration="2" complete="0" expand="true"/>
+        <task id="9" uid="f8496c60dad64b34894673c625beec4c" name="Infrastruttura e credenziali" color="#ef6c00" meeting="false" start="2026-05-07" duration="5" complete="0" expand="true">
             <depend id="12" type="2" difference="0" hardness="Strong"/>
+            <task id="10" uid="8526da7034f34e628d988b8b63b779d3" name="Estrazione credenziali collaudo" color="#fb8c00" meeting="false" start="2026-05-07" duration="2" complete="0" expand="true"/>
+            <task id="11" uid="a70ff70e2f964ccbb0e0c3ab48950e7d" name="Provisioning Linode fleet" color="#fb8c00" meeting="false" start="2026-05-11" duration="3" complete="0" expand="true"/>
         </task>
-        <task id="12" name="Esecuzione test" color="#6a1b9a" meeting="false" start="2026-05-08" duration="1" complete="0" expand="true">
+        <task id="12" uid="8eb93ed943d945a4815b3e3e47261730" name="Esecuzione test" color="#6a1b9a" meeting="false" start="2026-05-15" duration="2" complete="0" expand="true">
             <depend id="13" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="13" name="Report e delivery" color="#455a64" meeting="false" start="2026-05-11" duration="2" complete="0" expand="true"/>
+        <task id="13" uid="5417a50c02214c29aa03a0f4278142f2" name="Report e delivery" color="#455a64" meeting="false" start="2026-05-19" duration="3" complete="0" expand="true"/>
     </tasks>
     <resources>
         <resource id="0" name="Dev" function="Default:1" contacts="" phone=""/>
@@ -71,7 +75,6 @@
     <allocations>
         <allocation task-id="1" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
         <allocation task-id="2" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
-        <allocation task-id="3" resource-id="1" function="Default:1" responsible="true" load="100.0"/>
         <allocation task-id="4" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
         <allocation task-id="6" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
         <allocation task-id="7" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
@@ -80,6 +83,7 @@
         <allocation task-id="11" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
         <allocation task-id="12" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
         <allocation task-id="13" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="3" resource-id="1" function="Default:1" responsible="true" load="100.0"/>
     </allocations>
     <vacations/>
     <previous/>
