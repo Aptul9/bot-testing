@@ -1,8 +1,16 @@
 #!/bin/bash
 # bootstrap-vm.sh
 #
+# WARNING: this file MUST be checked out with LF line endings. The repo's
+# .gitattributes forces eol=lf for *.sh; do not bypass it. CRLF here
+# breaks the remote `set -euo pipefail` parse on Ubuntu and the script
+# aborts silently. See custom-instructions/linode.md section 17.
+#
 # StackScript / cloud-init equivalent script. Runs on first boot of an
-# antibot fleet VM (Ubuntu 24.04 LTS).
+# antibot fleet VM (Ubuntu 24.04 LTS). If Linode does not auto-execute
+# the deposited /root/StackScript on first boot, invoke manually:
+#   ssh root@<ip> "tr -d '\r' < /root/StackScript > /tmp/bootstrap.sh \
+#     && nohup bash /tmp/bootstrap.sh > /var/log/stackscript.log 2>&1 &"
 #
 # Behavior:
 #   1. Update apt + install Docker + git
