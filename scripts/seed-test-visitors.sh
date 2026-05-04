@@ -46,7 +46,7 @@ TOKEN_JSON="$(curl -fsSL -X POST \
   -d "password=$WAF_BOTS_KEYCLOAK_ADMIN_PASSWORD" \
   -d "grant_type=password")"
 
-TOKEN="$(echo "$TOKEN_JSON" | python -c 'import json,sys; print(json.load(sys.stdin)["access_token"])')"
+TOKEN="$(echo "$TOKEN_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin)["access_token"])')"
 
 if [ -z "$TOKEN" ]; then
   echo "ERROR: failed to obtain admin token" >&2
@@ -59,9 +59,9 @@ for i in $(seq 1 "$COUNT"); do
   USERNAME="${PREFIX}-${STAMP}-${i}"
   EMAIL="${USERNAME}@example.invalid"
   # 16-byte URL-safe random password
-  PASSWORD="$(python -c 'import secrets; print(secrets.token_urlsafe(16))')"
+  PASSWORD="$(python3 -c 'import secrets; print(secrets.token_urlsafe(16))')"
 
-  PAYLOAD="$(python -c "
+  PAYLOAD="$(python3 -c "
 import json, sys
 print(json.dumps({
   'username': sys.argv[1],
@@ -81,7 +81,7 @@ print(json.dumps({
     -d "$PAYLOAD")"
 
   if [ "$HTTP_CODE" = "201" ] || [ "$HTTP_CODE" = "204" ]; then
-    python -c "
+    python3 -c "
 import json, sys
 print(json.dumps({'username': sys.argv[1], 'email': sys.argv[2], 'password': sys.argv[3], 'http_code': int(sys.argv[4])}))
 " "$USERNAME" "$EMAIL" "$PASSWORD" "$HTTP_CODE"
