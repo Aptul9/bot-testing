@@ -1,4 +1,8 @@
-"""Logger strutturato JSON su stdout."""
+"""Structured JSON logger on stderr.
+
+stdout is reserved for the CLI's RunReport JSON payload. Logs go to stderr so
+they can be filtered separately when capturing reports via shell redirection.
+"""
 
 from __future__ import annotations
 

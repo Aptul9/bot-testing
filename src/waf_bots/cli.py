@@ -51,7 +51,10 @@ def build_parser() -> argparse.ArgumentParser:
         "--concurrency",
         type=int,
         default=1,
-        help="Concorrency for HTTP async BOTs. Ignored by browser BOTs (default: 1)",
+        help=(
+            "Worker count. HTTP BOTs share an async client; "
+            "browser BOTs share a Playwright context (default: 1)"
+        ),
     )
     parser.add_argument(
         "--rps",
@@ -90,11 +93,6 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.set_defaults(dry_run=True)
     return parser
-
-
-async def _run(bot: Bot) -> int:
-    report = await bot.run()
-    return report  # type: ignore[return-value]
 
 
 def main(argv: list[str] | None = None) -> int:
