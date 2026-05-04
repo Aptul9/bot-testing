@@ -99,7 +99,7 @@ class HttpBot(Bot):
                 data=spec.data,
                 headers=spec.headers,
             )
-        except BaseException as exc:
+        except Exception as exc:
             elapsed_ms = (time.monotonic() - start) * 1000
             return observe_exception(exc, elapsed_ms, endpoint=spec.path)
         elapsed_ms = (time.monotonic() - start) * 1000

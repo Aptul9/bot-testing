@@ -22,7 +22,7 @@ Real flow per issue_request:
 
 from __future__ import annotations
 
-import contextlib
+import asyncio
 import os
 import secrets
 import time
@@ -38,6 +38,7 @@ from waf_bots.common.http import (
     observe_exception,
     observe_response,
 )
+from waf_bots.common.logger import get_logger
 from waf_bots.common.waf_signals import WafObservation, WafSignal
 
 KEYCLOAK_BASE_URL_ENV = "WAF_BOTS_KEYCLOAK_BASE_URL"
@@ -80,6 +81,8 @@ class RegistrationBot(Bot):
         self._client: httpx.AsyncClient | None = None
         self._token: str | None = None
         self._token_exp: float = 0.0
+        self._token_lock = asyncio.Lock()
+        self._kc_log = get_logger(f"waf_bots.{self.name}.keycloak")
 
     def _token_url(self) -> str:
         return f"/realms/{self._realm}/protocol/openid-connect/token"
@@ -133,8 +136,11 @@ class RegistrationBot(Bot):
         self._token_exp = time.monotonic() + float(data.get("expires_in", 60))
 
     async def _ensure_token(self) -> None:
-        if not self._token or time.monotonic() >= self._token_exp - TOKEN_REFRESH_MARGIN_S:
-            await self._refresh_token()
+        # Lock prevents concurrent refresh requests when many workers
+        # simultaneously observe an expired token.
+        async with self._token_lock:
+            if not self._token or time.monotonic() >= self._token_exp - TOKEN_REFRESH_MARGIN_S:
+                await self._refresh_token()
 
     @staticmethod
     def _build_user_payload(worker_id: int, sequence: int) -> dict[str, Any]:
@@ -172,7 +178,7 @@ class RegistrationBot(Bot):
 
         try:
             await self._ensure_token()
-        except BaseException as exc:
+        except Exception as exc:
             return observe_exception(exc, 0.0, endpoint=self._token_url())
 
         payload = self._build_user_payload(worker_id, sequence)
@@ -183,14 +189,20 @@ class RegistrationBot(Bot):
                 json=payload,
                 headers={"Authorization": f"Bearer {self._token}"},
             )
-        except BaseException as exc:
+        except Exception as exc:
             elapsed_ms = (time.monotonic() - start) * 1000
             return observe_exception(exc, elapsed_ms, endpoint=endpoint)
         elapsed_ms = (time.monotonic() - start) * 1000
 
         # Refresh token on 401, then count this attempt as the response we got.
         if response.status_code == 401:
-            with contextlib.suppress(BaseException):
-                await self._refresh_token()
+            try:
+                async with self._token_lock:
+                    await self._refresh_token()
+            except Exception as exc:
+                self._kc_log.warning(
+                    "token_refresh_failed_on_401",
+                    extra={"extra_fields": {"error": repr(exc)}},
+                )
 
         return observe_response(response, elapsed_ms, endpoint=endpoint)
