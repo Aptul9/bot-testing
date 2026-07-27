@@ -21,7 +21,7 @@ from typing import ClassVar
 
 from waf_bots.bots.http_bot import HttpBot, HttpRequestSpec
 
-API_PREFIX = "/smnadarte-integration-app-web/app/api"
+API_PREFIX = "/smnadarte-integration-app-web/api/app"
 
 USERNAME_ENV = "WAF_BOTS_ATO_USERNAME"
 PASSWORD_ENV = "WAF_BOTS_ATO_PASSWORD"

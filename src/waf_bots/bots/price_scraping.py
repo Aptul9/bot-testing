@@ -7,7 +7,7 @@ from typing import ClassVar
 
 from waf_bots.bots.browser_bot import BrowserBot
 
-API_PREFIX = "/smnadarte-integration-app-web/app/api"
+API_PREFIX = "/smnadarte-integration-app-web/api/app"
 
 # Placeholder per parametri path. Il backend potra' rispondere 404 o 400 ma
 # l'obiettivo e' il pattern di richieste ripetute, non la validita' funzionale.
