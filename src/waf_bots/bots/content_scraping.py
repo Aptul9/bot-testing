@@ -11,7 +11,7 @@ from waf_bots.bots.browser_bot import BrowserBot
 # il WAF rileva comunque il pattern di scraping ripetuto sui medesimi path.
 QR_PLACEHOLDER = "WAFTEST00000001"
 
-API_PREFIX = "/smnadarte-integration-app-web/app/api"
+API_PREFIX = "/smnadarte-integration-app-web/api/app"
 
 
 class ContentScrapingBot(BrowserBot):

@@ -12,13 +12,13 @@ from waf_bots.bots.price_scraping import PriceScrapingBot
 def test_content_scraping_paths_non_empty() -> None:
     assert len(ContentScrapingBot.paths) >= 3
     for path in ContentScrapingBot.paths:
-        assert path.startswith("/smnadarte-integration-app-web/app/api/reservation/")
+        assert path.startswith("/smnadarte-integration-app-web/api/app/reservation/")
 
 
 def test_price_scraping_paths_non_empty() -> None:
     assert len(PriceScrapingBot.paths) >= 4
     for path in PriceScrapingBot.paths:
-        assert path.startswith("/smnadarte-integration-app-web/app/api/")
+        assert path.startswith("/smnadarte-integration-app-web/api/app/")
 
 
 def test_browser_bot_url_building_with_trailing_slash() -> None:
