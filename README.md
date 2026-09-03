@@ -46,7 +46,7 @@ docker build -t waf-bots:dev .
 docker run --rm waf-bots:dev --bot bot-1-dos --duration 60
 ```
 
-## Real run (collaudo target)
+## Real run (prod target)
 
 Real run requires the prerequisites tracked in `01_Projects/antibot.md` `## Blockers` (vault) to be closed:
 
