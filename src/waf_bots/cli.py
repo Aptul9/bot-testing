@@ -16,7 +16,7 @@ from waf_bots.bots.dos import DosBot
 from waf_bots.bots.price_scraping import PriceScrapingBot
 from waf_bots.bots.registration import RegistrationBot
 
-DEFAULT_BASE_URL = "https://api-coll.museiitaliani.it"
+DEFAULT_BASE_URL = "https://api.museiitaliani.it"
 
 _REGISTRY: Mapping[str, type[Bot]] = {
     "bot-1-dos": DosBot,

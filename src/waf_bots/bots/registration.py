@@ -6,7 +6,7 @@ admin endpoint is stable and well documented; if Almaviva exposes a public
 self-registration endpoint in the future, a sibling BrowserBot can be added.
 
 Env vars consumed:
-  WAF_BOTS_KEYCLOAK_BASE_URL     default https://login-coll.museiitaliani.it
+  WAF_BOTS_KEYCLOAK_BASE_URL     default https://login.museiitaliani.it
   WAF_BOTS_KEYCLOAK_REALM        default AD-Arte-visitors
   WAF_BOTS_KEYCLOAK_ADMIN_CLIENT_ID  default admin-cli
   WAF_BOTS_KEYCLOAK_ADMIN_USER   required for --no-dry-run
@@ -47,7 +47,7 @@ KEYCLOAK_ADMIN_CLIENT_ID_ENV = "WAF_BOTS_KEYCLOAK_ADMIN_CLIENT_ID"
 KEYCLOAK_ADMIN_USER_ENV = "WAF_BOTS_KEYCLOAK_ADMIN_USER"
 KEYCLOAK_ADMIN_PASSWORD_ENV = "WAF_BOTS_KEYCLOAK_ADMIN_PASSWORD"
 
-DEFAULT_KEYCLOAK_BASE_URL = "https://login-coll.museiitaliani.it"
+DEFAULT_KEYCLOAK_BASE_URL = "https://login.museiitaliani.it"
 DEFAULT_REALM = "AD-Arte-visitors"
 DEFAULT_ADMIN_CLIENT_ID = "admin-cli"
 
